@@ -1,8 +1,6 @@
-const TELEGRAM_BOT_TOKEN =
-  "vk1.a.CRkLLm7gNQ361edpy3o7Yc8HOzUayiZ-qwrZwoiOIq7ayicDEAUt2CIE7vMuLeNN7sqEfmT6J6GjO6LMQe5TcMCpSmtVs31Xtb1-zSMrD9oO7GP15CiR4TvcC16jyCSpPQf2_rABER5U990Wi016lxAlYDOkwTUZqDIftYN8jC0xukGaHW_cMmjkNea_l0Dyb_NNYy6rf_Y2ZVQxyRztzw";
-const TELEGRAM_CHAT_ID = "224996524";
-const API = `https://api.vk.com/method/messages.send`;
-
+const TELEGRAM_BOT_TOKEN = "8798342879:AAFawWVHQ4lRPqVqjYQ6X5iclJd8u-B_d_o";
+const TELEGRAM_CHAT_ID = "@WeddingDorogovi";
+const API = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
 
 async function sendQuestionnaire(event) {
   event.preventDefault();
@@ -26,14 +24,11 @@ async function sendQuestionnaire(event) {
     const response = await fetch(API, {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
       },
-      body: new URLSearchParams({
-        user_id: TELEGRAM_CHAT_ID,
-        random_id: Date.now(),
-        message: text,
-        access_token: TELEGRAM_BOT_TOKEN,
-        v: "5.131",
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text,
       }),
     });
 
@@ -99,7 +94,6 @@ document.querySelectorAll('input[name="presence"]').forEach((radio) => {
   });
 });
 
-
 function startCountdown(targetDate) {
   function updateTimer() {
     const now = new Date().getTime();
@@ -134,23 +128,35 @@ startCountdown(newYear);
 const urlParams = new URLSearchParams(window.location.search);
 const nameParam = urlParams.get("name");
 const arr = [
-  "Анна","Аня",
-  "Бабушка","Бабушка Ира","Бабушка Света",
-  "Наташа","Наталия",
+  "Анна",
+  "Аня",
+  "Бабушка",
+  "Бабушка Ира",
+  "Бабушка Света",
+  "Наташа",
+  "Наталия",
   "Тетя Таня",
   "Марина",
-  "Шура","Саша","Александра",
-  "Катя","Екатерина",
-  "Настя", "Анастасия",
-  "Лена", "Елена",
+  "Шура",
+  "Саша",
+  "Александра",
+  "Катя",
+  "Екатерина",
+  "Настя",
+  "Анастасия",
+  "Лена",
+  "Елена",
   "Лиана",
-  "Лера","Валерия",
-  "Полина", 
+  "Лера",
+  "Валерия",
+  "Полина",
   "Ульяна",
   "Влада",
   "Лариса",
-  "Таня", "Татьяна",
-  "Надя", "Надежда"
+  "Таня",
+  "Татьяна",
+  "Надя",
+  "Надежда",
 ];
 if (nameParam) {
   const decodedName = decodeURIComponent(nameParam.replace(/\+/g, " "));
@@ -158,10 +164,7 @@ if (nameParam) {
   document.getElementById("greeting").style.fontSize = "30px";
   document.getElementById("greeting_wedding").style.fontSize = "30px";
 
-  if (
-    decodedName.includes(" ") &&
-    !decodedName.includes("Бабушка Ира")
-  ) {
+  if (decodedName.includes(" ") && !decodedName.includes("Бабушка Ира")) {
     document.getElementById("greeting").textContent =
       `Уважаемые ${decodedName},`;
   } else {
@@ -188,16 +191,14 @@ button.addEventListener("touchend", function (e) {
 function initScrollAnimation() {
   const containers = document.querySelectorAll(".conteiner");
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-  );
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  });
   containers.forEach((container) => {
     observer.observe(container);
   });
