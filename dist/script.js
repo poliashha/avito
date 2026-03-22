@@ -1,15 +1,15 @@
 const scriptURL =
-  "https://script.google.com/macros/s/AKfycbxyv4ijv7azb3Me-hWfx3LJM9CHdPaNhCSzFHZL7SngfXI67LnJR7vhK2bKgHH43W8IyA/exec";
+  "https://script.google.com/macros/s/AKfycbx0qN8sQcw3hy9ZVS48WYHexJ0O-mvnKbJ5RPLX1G0qhBdZOnc1Q2rv9R-Ecepl8ORB/exec";
 const form = document.forms["submit-to-google-sheet"];
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   var formData = new FormData(form);
   fetch(scriptURL, { method: "POST", body: formData })
     .then((response) => {
-      swal("Done", "Submitted Successfully.", "success");
+      console.log("Done", "Submitted Successfully.", "success");
     })
     .catch((error) => {
-      swal("Error", "Something went wrong. please try again!", "error");
+      console.log("Error", "Something went wrong. please try again!", "error");
     });
 });
 
