@@ -1,12 +1,16 @@
 const scriptURL =
-  "https://script.google.com/macros/s/AKfycbwVG0-vLu8tyQ2uLMzbRnUEaoX5k98ItMGf2JOqtRJt7xIzEF4tgKkArrwMDz_sGuuTlA/exec";
-const form = document.forms["form"];
-
+  "https://script.google.com/macros/s/AKfycbxyv4ijv7azb3Me-hWfx3LJM9CHdPaNhCSzFHZL7SngfXI67LnJR7vhK2bKgHH43W8IyA/exec";
+const form = document.forms["submit-to-google-sheet"];
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  fetch(scriptURL, { method: "POST", body: new FormData(form) })
-    .then((response) => console.log("Success!", response))
-    .catch((error) => console.error("Error!", error.message));
+  var formData = new FormData(form);
+  fetch(scriptURL, { method: "POST", body: formData })
+    .then((response) => {
+      swal("Done", "Submitted Successfully.", "success");
+    })
+    .catch((error) => {
+      swal("Error", "Something went wrong. please try again!", "error");
+    });
 });
 
 document.addEventListener("DOMContentLoaded", function () {
