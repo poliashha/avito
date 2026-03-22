@@ -166,7 +166,8 @@ if (nameParam) {
 
   if (decodedName.includes(" ") && !decodedName.includes("Бабушка Ира")) {
     document.getElementById("greeting").textContent =
-      `Уважаемые<br> ${decodedName},`;
+      `Уважаемые,`;
+      document.getElementById("greetingNames").textContent = `${decodedName}`;
   } else {
     if (arr.includes(decodedName)) {
       document.getElementById("greeting").textContent =
