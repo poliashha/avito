@@ -16,7 +16,7 @@ form.addEventListener("submit", (e) => {
    newFormData.append("name", formData.get("name"));
    newFormData.append("presence", formData.get("presence"));
    newFormData.append("allergy", formData.get("allergy"));
-   newFormData.append("listallergy", formData.get("listallergy"));
+   newFormData.append("listallergy", formData.get("listallergy") || "-");
    newFormData.append("drinks", drinksString); 
   
   fetch(scriptURL, { method: "POST", body: newFormData })
