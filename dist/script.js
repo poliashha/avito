@@ -1,35 +1,13 @@
-const URL_APP =
-  "https://script.google.com/macros/s/AKfycbztGqky5wLd31Rl973P007eAEQYSRAiNQoQ4mCHppfubh7spZ5DsPaT1hty8WPpTeEKiQ/exec";
+const scriptURL =
+  "https://script.google.com/macros/s/AKfycbyfZZLbXIULvyZ3UZJ1DHqqVqmnuPQQ9xULOIsF6Bm7fTrFXFkUDCd0XmhzwZJj-kbufA/exec";
+const form = document.forms["submit-to-google-sheet"];
 
-
-const form = document.querySelector("#form");
-
-form.addEventListener("submit", async (ev) => {
-  ev.preventDefault();
-
-  const nameInput = document.querySelector("[name=name]");
-  const name = nameInput ? nameInput.value.trim() : "";
-
-  const formData = new URLSearchParams();
-  formData.append("name", name);
-
-  try {
-    const response = await fetch(URL_APP, {
-      method: "POST",
-      mode: "no-cors",
-      body: formData,
-    });
-
-    // При mode: "no-cors" response читать нельзя, просто показываем успех
-    alert("Спасибо за заявку!");
-    if (nameInput) nameInput.value = "";
-  } catch (err) {
-    console.log("Ошибка:", err);
-    // Даже при ошибке, данные могут отправиться
-    alert("Спасибо за заявку!");
-    if (nameInput) nameInput.value = "";
-  }
-});
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  fetch(scriptURL, { method: "POST", body: new FormData(form) })
+    .then((response) => console.log("Success!", response))
+    .catch((error) => console.error("Error!", error.message));
+}); 
 
 document.addEventListener("DOMContentLoaded", function () {
   const yesRadio = document.getElementById("allergyYes");
