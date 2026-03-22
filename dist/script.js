@@ -4,25 +4,31 @@ const form = document.forms["submit-to-google-sheet"];
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-   const formData = new FormData(form);
-formSendResult.textContent = "";
-   const drinks = formData.getAll("drinks");
+  const formData = new FormData(form);
+  const formSendResult = document.querySelector(".form-send");
+  formSendResult.textContent = "";
+  const drinks = formData.getAll("drinks");
 
-   // Преобразуем массив в строку с разделителем (например, запятая)
-   const drinksString = drinks.join(", ");
+  // Преобразуем массив в строку с разделителем (например, запятая)
+  const drinksString = drinks.join(", ");
 
-   // Создаем новый FormData и добавляем все поля
-   const newFormData = new FormData();
-   newFormData.append("name", formData.get("name"));
-   newFormData.append("presence", formData.get("presence"));
-   newFormData.append("allergy", formData.get("allergy"));
-   newFormData.append("listallergy", formData.get("listallergy") || "-");
-   newFormData.append("drinks", drinksString); 
-  
+  // Создаем новый FormData и добавляем все поля
+  const newFormData = new FormData();
+  newFormData.append("name", formData.get("name"));
+  newFormData.append("presence", formData.get("presence"));
+  newFormData.append("allergy", formData.get("allergy"));
+  newFormData.append("listallergy", formData.get("listallergy") || "-");
+  newFormData.append("drinks", drinksString);
+
   fetch(scriptURL, { method: "POST", body: newFormData })
-    .then((response) => formSendResult.textContent = "Спасибо! Анкета отправлена.")
-    .catch((error) => formSendResult.textContent = "Повторите попытку позже.");
-}); 
+    .then(
+      (response) =>
+        (formSendResult.textContent = "Спасибо! Анкета отправлена."),
+    )
+    .catch(
+      (error) => (formSendResult.textContent = "Повторите попытку позже."),
+    );
+});
 
 document.addEventListener("DOMContentLoaded", function () {
   const yesRadio = document.getElementById("allergyYes");
