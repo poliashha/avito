@@ -4,7 +4,16 @@ const form = document.forms["submit-to-google-sheet"];
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  fetch(scriptURL, { method: "POST", body: new FormData(form) })
+   const formData = new FormData(form);
+
+   const name = formData.get("name");
+   const presence = formData.get("presence");
+   const allergy = formData.get("allergy");
+   const listallergy = formData.get("listallergy");
+   const drinks = formData.getAll("drinks");
+
+  fetch(scriptURL, { method: "POST", 
+    body: formData })
     .then((response) => console.log("Success!", response))
     .catch((error) => console.error("Error!", error.message));
 }); 
