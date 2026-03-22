@@ -18,6 +18,10 @@ form.addEventListener("submit", async (ev) => {
   try {
     const response = await fetch(URL_APP, {
       method: "POST",
+      mode: "no-cors", // <- меняем на no-cors
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
       body: formData,
     });
 
