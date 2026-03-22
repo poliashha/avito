@@ -5,7 +5,7 @@ const form = document.forms["submit-to-google-sheet"];
 form.addEventListener("submit", (e) => {
   e.preventDefault();
    const formData = new FormData(form);
-
+formSendResult.textContent = "";
    const drinks = formData.getAll("drinks");
 
    // Преобразуем массив в строку с разделителем (например, запятая)
@@ -20,8 +20,8 @@ form.addEventListener("submit", (e) => {
    newFormData.append("drinks", drinksString); 
   
   fetch(scriptURL, { method: "POST", body: newFormData })
-    .then((response) => console.log("Success!", response))
-    .catch((error) => console.error("Error!", error.message));
+    .then((response) => formSendResult.textContent = "Спасибо! Анкета отправлена.")
+    .catch((error) => formSendResult.textContent = "Повторите попытку позже.");
 }); 
 
 document.addEventListener("DOMContentLoaded", function () {
