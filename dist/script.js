@@ -1,18 +1,22 @@
+const form = document.querySelector("#form");
+const submitButton = document.querySelector("#submit");
 const scriptURL =
-  "https://script.google.com/macros/s/AKfycbx0qN8sQcw3hy9ZVS48WYHexJ0O-mvnKbJ5RPLX1G0qhBdZOnc1Q2rv9R-Ecepl8ORB/exec";
-const form = document.forms["submit-to-google-sheet"];
+  "https://script.google.com/macros/s/AKfycbzfxM4hVNW7DxrMUFl1EtmCobakl8hY5v1XStVRd6FL_Hwukt_1F8DRw7xWeN4NoVmw/exec";
+
 form.addEventListener("submit", (e) => {
+  submitButton.disabled = true;
   e.preventDefault();
-  var formData = new FormData(form);
-  fetch(scriptURL, { method: "POST", body: formData })
+  let requestBody = new FormData(form);
+  fetch(scriptURL, { method: "POST", body: requestBody })
     .then((response) => {
-      console.log("Done", "Submitted Successfully.", "success");
+      alert("Success!", response);
+      submitButton.disabled = false;
     })
     .catch((error) => {
-      console.log("Error", "Something went wrong. please try again!", "error");
+      alert("Error!", error.message);
+      submitButton.disabled = false;
     });
 });
-
 document.addEventListener("DOMContentLoaded", function () {
   const yesRadio = document.getElementById("allergyYes");
   const noRadio = document.getElementById("allergyNo");
