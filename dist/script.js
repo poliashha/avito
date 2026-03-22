@@ -6,14 +6,20 @@ form.addEventListener("submit", (e) => {
   e.preventDefault();
    const formData = new FormData(form);
 
-   const name = formData.get("name");
-   const presence = formData.get("presence");
-   const allergy = formData.get("allergy");
-   const listallergy = formData.get("listallergy");
    const drinks = formData.getAll("drinks");
 
-  fetch(scriptURL, { method: "POST", 
-    body: formData })
+   // Преобразуем массив в строку с разделителем (например, запятая)
+   const drinksString = drinks.join(", ");
+
+   // Создаем новый FormData и добавляем все поля
+   const newFormData = new FormData();
+   newFormData.append("name", formData.get("name"));
+   newFormData.append("presence", formData.get("presence"));
+   newFormData.append("allergy", formData.get("allergy"));
+   newFormData.append("listallergy", formData.get("listallergy"));
+   newFormData.append("drinks", drinksString); 
+  
+  fetch(scriptURL, { method: "POST", body: newFormData })
     .then((response) => console.log("Success!", response))
     .catch((error) => console.error("Error!", error.message));
 }); 
