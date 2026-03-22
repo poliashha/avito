@@ -1,54 +1,75 @@
-const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbzxyptUhuEKdxVkgLnwdiYCcL-xd77f2y825nuDot8XJMPXRMR8Q2lnIJaYaNMRatbF/exec";
+const URL_APP =
+  "https://script.google.com/macros/s/AKfycbw65TZY6m6s_-sn5bcF4vDvDO10sL-FtG7aYjzskGRAC3BCxN8OIwAZsjqfDc1kCrZu/exec";
 
-async function sendQuestionnaire(event) {
-  event.preventDefault();
-  const form = event.target;
-  const formBtn = document.querySelector(".button");
-  const formSendResult = document.querySelector(".form-send");
-  formSendResult.textContent = "";
+// находим форму в документе
+const form = document.querySelector("#form");
 
-  const formData = new FormData(form);
+// указываем адрес отправки формы (нужно только в начале примера)
+form.action = URL_APP;
 
-  const name = formData.get("name");
-  const presence = formData.get("presence");
-  const allergy = formData.get("allergy");
-  const listallergy = formData.get("listallergy");
-  const drinks = formData.getAll("drinks");
+// вспомогательная функция проверки заполненности формы
+function isFilled(details) {
+  const { name, email, phone, rule, category } = details;
+  if (!name) return false;
+  
+  return true;
+}
 
-  // Формируем данные для отправки
-  const data = {
-    name: name,
-    presence: presence,
-    allergy: allergy,
-    listallergy: allergy === "да" ? listallergy : "",
-    drinks: drinks.join(", "),
+// навешиваем обработчик на отправку формы
+form.addEventListener("submit", async (ev) => {
+  // отменяем действие по умолчанию
+  ev.preventDefault();
+
+  // получаем ссылки на элементы формы
+  const name = document.querySelector("[name=name]");
+ 
+  //const category = document.querySelector("[name=category]");
+
+  // собираем данные из элементов формы
+  let details = {
+    name: name.value.trim(),
+   
   };
 
-  try {
-    formBtn.textContent = "Отправка...";
+  // если поля не заполнены - прекращаем обработку
+  if (!isFilled(details)) return;
 
-    // Отправляем с mode: 'no-cors' для обхода CORS
-    await fetch(GOOGLE_SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    // При mode: 'no-cors' мы не можем прочитать ответ,
-    // но данные всё равно уходят. Поэтому показываем успех.
-    formSendResult.textContent = "Спасибо! Анкета отправлена.";
-    form.reset();
-  } catch (error) {
-    console.error("Ошибка:", error);
-    formSendResult.textContent = "Ошибка отправки. Попробуйте позже.";
-  } finally {
-    formBtn.textContent = "Подтвердить присутствие";
+  // подготавливаем данные для отправки
+  let formBody = [];
+  for (let property in details) {
+    // кодируем названия и значения параметров
+    let encodedKey = encodeURIComponent(property);
+    let encodedValue = encodeURIComponent(details[property]);
+    formBody.push(encodedKey + "=" + encodedValue);
   }
-}
+  // склеиваем параметры в одну строку
+  formBody = formBody.join("&");
+
+  // выполняем отправку данных в Google Apps
+  const result = await fetch(URL_APP, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+    },
+    //cors: "no-cors", <- это неправильно
+    mode: "cors", //<- оставим по умолчанию
+    body: formBody,
+  })
+    .then((res) => res.json())
+    .catch((err) => alert("Ошибка!"));
+  // .then((res) => console.log(res));
+
+  if (result.type === "success") {
+    name.value = "";
+    email.value = "";
+    phone.value = "";
+    message.value = "";
+    alert("Спасибо за заявку!");
+  }
+  if (result.type === "error") {
+    alert(`Ошибка( ${result.errors}`);
+  }
+});
 
 document.addEventListener("DOMContentLoaded", function () {
   const yesRadio = document.getElementById("allergyYes");
