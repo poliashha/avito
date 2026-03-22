@@ -2,14 +2,14 @@ const scriptURL =
   "https://script.google.com/macros/s/AKfycbxVyTmUdSORG2dKhP_jpQMFZf814dMXKl5iTdXjf3sGo_xVan5iJb9Pe1Hc20ipNus_dw/exec";
 const form = document.forms["submit-to-google-sheet"];
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const formData = new FormData(form);
   const formSendResult = document.querySelector(".form-send");
   formSendResult.textContent = "";
   const drinks = formData.getAll("drinks");
-const formBth = document.querySelector(".button");
-formBth.textContent = "Отправка...";
+  const formBth = document.querySelector(".button");
+  formBth.textContent = "Отправка...";
   // Преобразуем массив в строку с разделителем (например, запятая)
   const drinksString = drinks.join(", ");
 
@@ -21,15 +21,20 @@ formBth.textContent = "Отправка...";
   newFormData.append("listallergy", formData.get("listallergy") || "-");
   newFormData.append("drinks", drinksString);
 
-  fetch(scriptURL, { method: "POST", body: newFormData })
-    .then(
-      (response) =>
-        (formSendResult.textContent = "Спасибо! Анкета отправлена."),
-      formBth.textContent = "Подтвердить присутвие"
-    )
-    .catch(
-      (error) => (formSendResult.textContent = "Повторите попытку позже."),
-    );
+  try {
+    const response = await fetch(scriptURL, {
+      method: "POST",
+      body: newFormData,
+    });
+    formSendResult.textContent = "Спасибо! Анкета отправлена.";
+    form.reset(); // Очищаем форму
+  } catch (error) {
+    formSendResult.textContent = "Повторите попытку позже.";
+    console.error(error);
+  } finally {
+    // Возвращаем кнопку в исходное состояние
+    submitButton.textContent = originalButtonText;
+  }
 });
 
 document.addEventListener("DOMContentLoaded", function () {
