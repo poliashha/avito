@@ -1,11 +1,10 @@
 const scriptURL =
-  "https://script.google.com/macros/s/AKfycbyf52XewNHY1j_XMgIM7oRa24Zl4Sq7V1zQClylgFldVWSFSMaMs1dRUp8Wab1CBUbu/exec";
+  "https://script.google.com/macros/s/AKfycbz1vXG78wIIXVWQCQ-KQjPiqxudb5BVlvjCulmhoxyzG_RFi_a_vwX27IU6ByayqVR5/exec";
 const form = document.forms["form"];
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   fetch(scriptURL, { method: "POST", body: new FormData(form) })
-    .then((response) => response.json())
     .then((response) => console.log("Success!", response))
     .catch((error) => console.error("Error!", error.message));
 });
