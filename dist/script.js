@@ -1,49 +1,56 @@
-const TELEGRAM_BOT_TOKEN = "8798342879:AAFawWVHQ4lRPqVqjYQ6X5iclJd8u-B_d_o";
-const TELEGRAM_CHAT_ID = "@WeddingDorogovi";
-const API = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+const GOOGLE_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbxEc6YkwSuoUZODxRJqOPHVNEJUjmVcme-Xp_Nr7XbNsDs8oOuI3Ex5iG5K184MIzHU/exec";
 
 async function sendQuestionnaire(event) {
   event.preventDefault();
   const form = event.target;
-  const formBth = document.querySelector(".button");
+  const formBtn = document.querySelector(".button");
   const formSendResult = document.querySelector(".form-send");
   formSendResult.textContent = "";
 
   const formData = new FormData(form);
 
+  // Собираем данные
   const name = formData.get("name");
   const presence = formData.get("presence");
   const allergy = formData.get("allergy");
   const listallergy = formData.get("listallergy");
   const drinks = formData.getAll("drinks");
 
-  const text = `Гость: ${name},\nбудет присутствовать: ${presence},\nесть аллергия: ${allergy}${allergy === "да" ? `,\nна что аллергия: ${listallergy}` : ""},\nнапитки: ${drinks.join(", ")}`;
+  // Формируем объект для отправки
+  const data = {
+    name: name,
+    presence: presence,
+    allergy: allergy,
+    listallergy: allergy === "да" ? listallergy : "",
+    drinks: drinks.join(", "), // Превращаем массив в строку через запятую
+  };
 
   try {
-    formBth.textContent = "Отправка...";
-    const response = await fetch(API, {
+    formBtn.textContent = "Отправка...";
+
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
+      mode: "cors",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text,
-      }),
+      body: JSON.stringify(data),
     });
 
-    if (response.ok) {
-      formSendResult.textContent = "Спасибо! Анкета отправлена.";
+    const result = await response.json();
 
+    if (result.success) {
+      formSendResult.textContent = "Спасибо! Анкета отправлена.";
       form.reset();
     } else {
-      throw new Error(response.statusText);
+      throw new Error(result.error || "Ошибка отправки");
     }
   } catch (error) {
     console.error(error);
-    formSendResult.textContent = "Спасибо! Анкета отправлена.";
+    formSendResult.textContent = "Ошибка отправки. Попробуйте позже.";
   } finally {
-    formBth.textContent = "Подтверидить присутсвие";
+    formBtn.textContent = "Подтвердить присутствие";
   }
 }
 document.addEventListener("DOMContentLoaded", function () {
@@ -165,8 +172,7 @@ if (nameParam) {
   document.getElementById("greeting_wedding").style.fontSize = "30px";
 
   if (decodedName.includes(" ") && !decodedName.includes("Бабушка Ира")) {
-    document.getElementById("greeting").textContent =
-      `Уважаемые,`;
+    document.getElementById("greeting").textContent = `Уважаемые,`;
     document.getElementById("greeting").textContent = `${decodedName}`;
   } else {
     if (arr.includes(decodedName)) {
