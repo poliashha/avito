@@ -1,74 +1,13 @@
-const URL_APP =
-  "https://script.google.com/macros/s/AKfycbw65TZY6m6s_-sn5bcF4vDvDO10sL-FtG7aYjzskGRAC3BCxN8OIwAZsjqfDc1kCrZu/exec";
+const scriptURL =
+  "https://script.google.com/macros/s/AKfycbygfUwhMlDBtS-JfSRoseF6oHRq7nmqbDYSH04lUFjOdjumIsc1aW8uY29DWyITqmu-/exec";
+const form = document.forms["form"];
 
-// находим форму в документе
-const form = document.querySelector("#form");
-
-// указываем адрес отправки формы (нужно только в начале примера)
-form.action = URL_APP;
-
-// вспомогательная функция проверки заполненности формы
-function isFilled(details) {
-  const { name, email, phone, rule, category } = details;
-  if (!name) return false;
-  
-  return true;
-}
-
-// навешиваем обработчик на отправку формы
-form.addEventListener("submit", async (ev) => {
-  // отменяем действие по умолчанию
-  ev.preventDefault();
-
-  // получаем ссылки на элементы формы
-  const name = document.querySelector("[name=name]");
- 
-  //const category = document.querySelector("[name=category]");
-
-  // собираем данные из элементов формы
-  let details = {
-    name: name.value.trim(),
-   
-  };
-
-  // если поля не заполнены - прекращаем обработку
-  if (!isFilled(details)) return;
-
-  // подготавливаем данные для отправки
-  let formBody = [];
-  for (let property in details) {
-    // кодируем названия и значения параметров
-    let encodedKey = encodeURIComponent(property);
-    let encodedValue = encodeURIComponent(details[property]);
-    formBody.push(encodedKey + "=" + encodedValue);
-  }
-  // склеиваем параметры в одну строку
-  formBody = formBody.join("&");
-
-  // выполняем отправку данных в Google Apps
-  const result = await fetch(URL_APP, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-    },
-    //cors: "no-cors", <- это неправильно
-    mode: "cors", //<- оставим по умолчанию
-    body: formBody,
-  })
-    .then((res) => res.json())
-    .catch((err) => alert("Ошибка!"));
-  // .then((res) => console.log(res));
-
-  if (result.type === "success") {
-    name.value = "";
-    email.value = "";
-    phone.value = "";
-    message.value = "";
-    alert("Спасибо за заявку!");
-  }
-  if (result.type === "error") {
-    alert(`Ошибка( ${result.errors}`);
-  }
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  fetch(scriptURL, { method: "POST", body: new FormData(form) })
+    .then((response) => response.json())
+    .then((response) => console.log("Success!", response))
+    .catch((error) => console.error("Error!", error.message));
 });
 
 document.addEventListener("DOMContentLoaded", function () {
