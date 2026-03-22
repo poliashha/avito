@@ -25,6 +25,7 @@ formBth.textContent = "Отправка...";
     .then(
       (response) =>
         (formSendResult.textContent = "Спасибо! Анкета отправлена."),
+      formBth.textContent = "Подтвердить присутвие"
     )
     .catch(
       (error) => (formSendResult.textContent = "Повторите попытку позже."),
