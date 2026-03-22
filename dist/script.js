@@ -1,5 +1,5 @@
 const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxEc6YkwSuoUZODxRJqOPHVNEJUjmVcme-Xp_Nr7XbNsDs8oOuI3Ex5iG5K184MIzHU/exec";
+  "https://script.google.com/macros/s/AKfycbzxyptUhuEKdxVkgLnwdiYCcL-xd77f2y825nuDot8XJMPXRMR8Q2lnIJaYaNMRatbF/exec";
 
 async function sendQuestionnaire(event) {
   event.preventDefault();
@@ -31,7 +31,7 @@ async function sendQuestionnaire(event) {
 
     const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
-      mode: "cors",
+      mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
       },
