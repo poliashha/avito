@@ -1,13 +1,39 @@
-const scriptURL =
-  "https://script.google.com/macros/s/AKfycbzrIqQ3EMuAFg-YgxpzVk8buufjR2DvWegZxzEMr36WvPfyk-Zh-O80XXjfMWL7Wu7N0Q/exec";
-const form = document.forms["submit-to-google-sheet"];
+const URL_APP =
+  "https://script.google.com/macros/s/AKfycbztGqky5wLd31Rl973P007eAEQYSRAiNQoQ4mCHppfubh7spZ5DsPaT1hty8WPpTeEKiQ/exec";
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  fetch(scriptURL, { method: "POST", body: new FormData(form) })
-    .then((response) => console.log("Success!", response))
-    .catch((error) => console.error("Error!", error.message));
-}); 
+// находим форму в документе
+const form = document.querySelector("#form");
+
+form.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+
+  // получаем только поле name
+  const nameInput = document.querySelector("[name=name]");
+  const nameValue = nameInput.value.trim();
+
+  // создаем данные только с name
+  const formData = new URLSearchParams();
+  formData.append("name", nameValue);
+
+  try {
+    const response = await fetch(URL_APP, {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = await response.json();
+
+    if (result.type === "success") {
+      nameInput.value = "";
+      alert("Спасибо за заявку!");
+    } else {
+      alert("Ошибка при отправке");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Ошибка отправки!");
+  }
+});
 
 document.addEventListener("DOMContentLoaded", function () {
   const yesRadio = document.getElementById("allergyYes");
