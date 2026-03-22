@@ -1,17 +1,25 @@
-const scriptURL = "https://script.google.com/macros/s/AKfycbxzBpJ0gz2yoboFg1Sj_AXxaomjeeC09F7NbHCU3yAY2UyHLGN5rAKEDnS2_9B8jB3k/exec";
-
+const scriptURL =
+  "https://script.google.com/macros/s/AKfycbyJxAztosrLM5WhXj--KtUE7sdNRFLbbS56i2T719zsoCQLm2e80NOJGwYklGuAvHOW/exec";
 const form = document.forms["form"];
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  // Собираем данные формы
   const formData = new FormData(form);
+  const data = {};
+  formData.forEach((value, key) => {
+    data[key] = value;
+  });
 
   try {
     const response = await fetch(scriptURL, {
       method: "POST",
       mode: "no-cors",
-      body: formData, // Отправляем FormData напрямую
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams(data), // Используем URLSearchParams вместо JSON
     });
 
     console.log("Form submitted successfully!");
