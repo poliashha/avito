@@ -156,7 +156,7 @@ if (nameParam) {
   document.getElementById("greeting_wedding").style.fontSize = "30px";
 
   if (decodedName.includes(" ") && !decodedName.includes("Бабушка Ира")) {
-    document.getElementById("greeting").textContent = `Уважаемые, ${decodedName}`;
+    document.getElementById("greeting").textContent = `Уважаемые ${decodedName},`;
   } else {
     if (arr.includes(decodedName)) {
       document.getElementById("greeting").textContent =
