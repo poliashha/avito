@@ -10,26 +10,26 @@ async function sendQuestionnaire(event) {
 
   const formData = new FormData(form);
 
-  // Собираем данные
   const name = formData.get("name");
   const presence = formData.get("presence");
   const allergy = formData.get("allergy");
   const listallergy = formData.get("listallergy");
   const drinks = formData.getAll("drinks");
 
-  // Формируем объект для отправки
+  // Формируем данные для отправки
   const data = {
     name: name,
     presence: presence,
     allergy: allergy,
     listallergy: allergy === "да" ? listallergy : "",
-    drinks: drinks.join(", "), // Превращаем массив в строку через запятую
+    drinks: drinks.join(", "),
   };
 
   try {
     formBtn.textContent = "Отправка...";
 
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
+    // Отправляем с mode: 'no-cors' для обхода CORS
+    await fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
       mode: "no-cors",
       headers: {
@@ -38,21 +38,18 @@ async function sendQuestionnaire(event) {
       body: JSON.stringify(data),
     });
 
-    const result = await response.json();
-
-    if (result.success) {
-      formSendResult.textContent = "Спасибо! Анкета отправлена.";
-      form.reset();
-    } else {
-      throw new Error(result.error || "Ошибка отправки");
-    }
+    // При mode: 'no-cors' мы не можем прочитать ответ,
+    // но данные всё равно уходят. Поэтому показываем успех.
+    formSendResult.textContent = "Спасибо! Анкета отправлена.";
+    form.reset();
   } catch (error) {
-    console.error(error);
+    console.error("Ошибка:", error);
     formSendResult.textContent = "Ошибка отправки. Попробуйте позже.";
   } finally {
     formBtn.textContent = "Подтвердить присутствие";
   }
 }
+
 document.addEventListener("DOMContentLoaded", function () {
   const yesRadio = document.getElementById("allergyYes");
   const noRadio = document.getElementById("allergyNo");
