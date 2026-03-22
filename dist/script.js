@@ -8,7 +8,8 @@ form.addEventListener("submit", (e) => {
   const formSendResult = document.querySelector(".form-send");
   formSendResult.textContent = "";
   const drinks = formData.getAll("drinks");
-
+const formBth = document.querySelector(".button");
+formBth.textContent = "Отправка...";
   // Преобразуем массив в строку с разделителем (например, запятая)
   const drinksString = drinks.join(", ");
 
